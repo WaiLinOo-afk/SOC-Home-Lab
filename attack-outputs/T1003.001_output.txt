@@ -1,0 +1,75 @@
+PathToAtomicsFolder = C:\AtomicRedTeam\atomics
+
+Executing test: 
+T1003.001-1 Dump LSASS.exe Memory using ProcDump
+
+Exception calling "Start" with "0" argument(s): "Access is denied"
+At C:\AtomicRedTeam\invoke-atomicredteam\Private\Invoke-Process.ps1:45 char:17
++                 $process.Start() > $null
++                 ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : Win32Exception
+
+Exit code: 
+Done executing test: 
+T1003.001-1 Dump LSASS.exe Memory using ProcDump
+
+Executing test: 
+T1003.001-2 Dump LSASS.exe Memory using comsvcs.dll
+
+Exception calling "Start" with "0" argument(s): "Access is denied"
+At C:\AtomicRedTeam\invoke-atomicredteam\Private\Invoke-Process.ps1:45 char:17
++                 $process.Start() > $null
++                 ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : Win32Exception
+
+Exit code: 
+Done executing test: 
+T1003.001-2 Dump LSASS.exe Memory using comsvcs.dll
+
+Executing test: 
+T1003.001-3 Dump LSASS.exe Memory using direct system calls and API unhooking
+
+The system cannot find the path specified.
+Exit code: 1
+Done executing test: 
+T1003.001-3 Dump LSASS.exe Memory using direct system calls and API unhooking
+
+Executing test: 
+T1003.001-4 Dump LSASS.exe Memory using NanoDump
+
+The system cannot find the path specified.
+Exit code: 1
+Done executing test: 
+T1003.001-4 Dump LSASS.exe Memory using NanoDump
+
+Executing test: 
+T1003.001-6 Offline Credential Theft With Mimikatz
+
+Exception calling "Start" with "0" argument(s): "Access is denied"
+At C:\AtomicRedTeam\invoke-atomicredteam\Private\Invoke-Process.ps1:45 char:17
++                 $process.Start() > $null
++                 ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : Win32Exception
+
+Exit code: 
+Done executing test: 
+T1003.001-6 Offline Credential Theft With Mimikatz
+
+Executing test: 
+T1003.001-7 LSASS read with pypykatz
+
+The system cannot find the path specified.
+Exit code: 1
+Done executing test: 
+T1003.001-7 LSASS read with pypykatz
+
+Executing test: 
+T1003.001-8 Dump LSASS.exe Memory using Out-Minidump.ps1
+
+Exception calling "Start" with "0" argument(s): "Access is denied"
+Exit code: 
+Done executing test: 
+T1003.001-8 Dump LSASS.exe Memory using Out-Minidump.ps1
