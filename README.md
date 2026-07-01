@@ -227,6 +227,12 @@ index=sysmon | head 10
 
 Both queries should return events, confirming data is flowing.
 
+**Evidence:**
+
+![wineventlog index](screenshots/index%3Dwineventlog.png)
+![sysmon index](screenshots/index%3Dsysmon.png)
+
+
 ---
 
 ## Step 4 — Splunk Universal Forwarder (Kali Linux)
@@ -294,6 +300,8 @@ In Splunk:
 ```spl
 index=syslog | head 10
 ```
+**Evidence:**
+![syslog index](screenshots/index%3Dsyslog.png)
 
 Should return events from `host=kali`, confirming cross-VM log forwarding is working.
 
@@ -318,6 +326,10 @@ Install-AtomicRedTeam -getAtomics -Force
 > Add-MpPreference -ExclusionPath "C:\AtomicRedTeam"
 > ```
 
+**Evidence:**
+
+![Atomic Red Team Setup](screenshots/AtomicRedTeamSetup.png)
+
 ---
 
 ### T1003.001 — OS Credential Dumping: LSASS Memory
@@ -333,6 +345,7 @@ Common tools: Mimikatz, ProcDump, comsvcs.dll (`MiniDump`), pypykatz.
 ```powershell
 Invoke-AtomicTest T1003.001
 ```
+
 
 **Result:** All sub-tests returned `Access Denied` — Windows Defender blocked execution of ProcDump, Mimikatz, comsvcs.dll, and pypykatz. However, the attempt itself was still logged by Sysmon EventID 1.
 
@@ -350,6 +363,12 @@ earliest=0 index=sysmon _raw="lsass"
 | table _time, host, Image, CommandLine
 | sort -_time
 ```
+
+**Evidence:**
+
+![T1003.001 Output](screenshots/T1003.001.png)
+![T1003.001 Detection](screenshots/Splunk%20Sysmon%20Detection%20-%20T1003.001%20LSASS%20Memory%20Dump%20Attempt.png)
+
 
 ---
 
@@ -370,7 +389,7 @@ Invoke-AtomicTest T1059.001
 **Splunk Detection Query:**
 
 ```spl
-earliest=0 index=sysmon _raw="*<EventID>1</EventID>*"
+earliest=0 index=sysmon _raw="1"
 | rex field=_raw "Name='Image'>(?<Image>[^<]+)"
 | rex field=_raw "Name='CommandLine'>(?<CommandLine>[^<]+)"
 | rex field=_raw "Name='ParentImage'>(?<ParentImage>[^<]+)"
@@ -384,6 +403,12 @@ earliest=0 index=sysmon _raw="*<EventID>1</EventID>*"
 ```
 
 **Detection logic:** The query hunts for PowerShell processes whose command-line arguments contain flags commonly used for obfuscation and policy bypass. The `ParentImage` field is particularly valuable for triage — `powershell.exe` spawned by `WINWORD.EXE`, `outlook.exe`, or `mshta.exe` is almost certainly malicious, whereas the same process spawned by `explorer.exe` requires more context.
+
+**Evidence:**
+
+![T1059.001 Output](screenshots/T1059.001.png)
+![T1059.001 Detection](screenshots/Splunk%20Sysmon%20Detection%20-%20T1059.001%20—%20PowerShell.png)
+
 
 ---
 
@@ -412,7 +437,7 @@ This is a known limitation on Windows 11 — the audit subcategory mapping appea
 **Splunk Detection Query:**
 
 ```spl
-earliest=0 index=sysmon _raw="*<EventID>1</EventID>*"
+earliest=0 index=sysmon _raw="1"
 | rex field=_raw "Name='Image'>(?<Image>[^<]+)"
 | rex field=_raw "Name='CommandLine'>(?<CommandLine>[^<]+)"
 | rex field=_raw "Name='User'>(?<User>[^<]+)"
@@ -427,6 +452,12 @@ earliest=0 index=sysmon _raw="*<EventID>1</EventID>*"
 ```powershell
 Invoke-AtomicTest T1053.005 -Cleanup
 ```
+
+**Evidence:**
+
+![T1053.005 Tasks Created](screenshots/T1053.005%20(Calculator%2C%20Event%20Viewer%20launched).png)
+![T1053.005 Detection](screenshots/Splunk%20Sysmon%20Detection%20-%20T1053.005%20—%20Scheduled%20Task%20Persistence.png)
+
 
 ---
 
@@ -469,6 +500,10 @@ earliest=0 index=wineventlog EventCode=4624
 | sort -_time
 ```
 
+**Evidence:**
+
+![T1021.002 Output](screenshots/T1021.002.png)
+
 ---
 
 ### T1046 — Network Service Discovery
@@ -490,6 +525,10 @@ nmap -sV -p 1-1000 192.168.56.130
 **Result:** Port 445 (SMB/Microsoft-DS) identified as open. All other ports in range 1-1000 filtered.
 
 > ⚠️ **Detection gap:** Nmap SYN scans are not captured by Windows Security event logs — there is no native Windows mechanism to log port scan attempts. Real detection requires a network-layer tool: Snort, Suricata, Zeek, or NetFlow analysis. This is a fundamental limitation of host-based SIEM monitoring and a gap that warrants supplementing Splunk with an NIDS/IDS in any real deployment.
+
+**Evidence:**
+
+![Nmap Scan](screenshots/T1110-nmap.png)
 
 ---
 
@@ -527,7 +566,7 @@ done
 ```spl
 earliest=0 index=wineventlog EventCode=4625
 | rex field=_raw "Source Network Address:\t+(?<src_ip>[^\n]+)"
-| rex field=_raw "Account Name:\t+(?<account>[^\n]+)" max_match=2
+| rex field=_raw "Account Name:\t+(?<account>[^\n]+)"
 | bucket _time span=5m
 | stats count as failed_attempts, values(account) as targeted_accounts by _time, src_ip
 | where failed_attempts >= 5
@@ -542,6 +581,12 @@ earliest=0 index=wineventlog EventCode=4740
 ```
 
 **Detection logic:** The first query applies a sliding window (5-minute buckets) and flags any source IP that generates 5+ failed logon attempts within that window — a signature consistent with automated credential stuffing or brute-force tools. The threshold of 5 should be tuned against the environment's baseline; in most environments 5 failures in 5 minutes from a single IP is highly anomalous.
+
+**Evidence:**
+
+![T1110 Brute Force Activity](screenshots/T1110.png)
+![T1110 Brute Force Nmap Pre-scan](screenshots/T1110-BruteForcing.png)
+![T1110 Brute Force Detection](screenshots/Splunk%20Sysmon%20Detection%20-%20T1110%20-%20Brute%20Force%20Detection.png)
 
 ---
 
@@ -558,6 +603,10 @@ Built using **Splunk → Dashboards → Create New Dashboard → Classic Dashboa
 | Failed Logins by Source IP | Statistics Table | Same as above, grouped by `src_ip` |
 | Sysmon Process Creation by Host | Statistics Table | `earliest=0 index=sysmon _raw="*<EventID>1</EventID>*" \| rex field=_raw "<Computer>(?<host>[^<]+)</Computer>" \| stats count by host \| sort -count` |
 | Events by Index | Bar Chart | `earliest=0 index=* \| stats count by index \| sort -count` |
+
+**Evidence:**
+
+![SOC Dashboard](screenshots/SOC%20Dashboard.png)
 
 ---
 
