@@ -638,34 +638,37 @@ Built using **Splunk → Dashboards → Create New Dashboard → Classic Dashboa
 
 ## Skills Demonstrated
 
-**Detection Engineering**
-- Writing Splunk SPL queries targeting specific MITRE ATT&CK techniques
-- Understanding Windows event log data sources, event codes, and their limitations
-- Using `rex` for field extraction from raw XML Sysmon event data
-- Applying statistical detection logic (time-bucketing, threshold-based alerting)
-- Distinguishing between host-based and network-based detection capabilities
+### Detection Engineering
+- Developed Splunk SPL queries to identify security events mapped to MITRE ATT&CK techniques
+- Worked with Windows Event Logs and Sysmon telemetry to understand available detection data and limitations
+- Used `rex` field extraction to parse raw XML Sysmon event data in Splunk
+- Applied basic detection logic using time-based grouping and threshold-based alerting
+- Compared host-based and network-based detection approaches
 
-**Endpoint Monitoring & Telemetry**
-- Sysmon deployment and XML configuration with the SwiftOnSecurity ruleset
-- Understanding key Sysmon EventIDs: 1 (Process Create), 3 (Network Connection), 11 (File Create)
-- Diagnosing and resolving Windows Event Log channel access control issues (DACL)
+### Endpoint Monitoring & Telemetry
+- Deployed and configured Sysmon using the SwiftOnSecurity configuration
+- Analysed key Sysmon events, including:
+  - Event ID 1: Process Creation
+  - Event ID 3: Network Connections
+  - Event ID 11: File Creation
+- Troubleshot Windows Event Log permissions and access issues related to data collection
 
-**Adversary Emulation**
-- Executing MITRE ATT&CK-mapped sub-tests with Atomic Red Team's `invoke-atomicredteam`
-- Interpreting test output to understand which sub-tests succeeded or failed and why
-- Cross-referencing attack execution results against SIEM telemetry to validate detection
+### Adversary Simulation & Testing
+- Used Atomic Red Team (`invoke-atomicredteam`) to simulate MITRE ATT&CK-based attack techniques
+- Analysed test results to understand successful and failed attack simulations
+- Validated SIEM detections by comparing attack activity with collected telemetry
 
-**SIEM Administration**
-- Splunk index design and data architecture for multi-source ingestion
-- Universal Forwarder deployment on both Windows and Linux
-- `inputs.conf` / `outputs.conf` configuration for forwarding Windows Event Logs and Sysmon
-- Splunk Dashboard creation for SOC analyst triage
+### SIEM Administration
+- Configured Splunk data ingestion from multiple sources
+- Set up and managed Splunk Universal Forwarders on Windows and Linux systems
+- Configured `inputs.conf` and `outputs.conf` for forwarding event data
+- Created Splunk dashboards to assist with security event investigation and analysis
 
-**Network Security Fundamentals**
-- Understanding the detection gap between host-based and network-based monitoring
-- Windows Firewall rule management for controlled lab traffic
-- SMB/Windows admin share exploitation mechanics and lateral movement patterns
-- Brute-force attack detection using authentication event analysis
+### Network Security Fundamentals
+- Explored differences between host-based and network-based security monitoring
+- Configured Windows Firewall rules for controlled lab environments
+- Investigated SMB-based attacks and Windows administrative share usage
+- Analysed authentication logs to identify potential brute-force activity
 
 ---
 
